@@ -13,4 +13,9 @@ public class Dog extends Animal {
                 ", age=" + getAge() +
                 '}';
     }
+
+    @Override
+    public void eat() {
+        System.out.println("eat dog");
+    }
 }
