@@ -13,4 +13,9 @@ public class Hamster extends Animal {
                 ", age=" + getAge() +
                 '}';
     }
+
+    @Override
+    public void eat() {
+        System.out.println("eat hamster");
+    }
 }
