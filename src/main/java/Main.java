@@ -15,5 +15,7 @@ public class Main {
         Animal bear = new Bear("Миша", 5);
         System.out.println(bear);
         bear.eat();
+        bear.typeAnimal();
+        System.out.printf("id = %d", Animal.getId());
     }
 }

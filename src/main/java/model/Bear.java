@@ -18,4 +18,8 @@ public class Bear extends Animal {
     public void eat() {
         System.out.println("eat bear");
     }
+
+    public static void typeAnimal() {
+        System.out.println("Я животное - медведь");
+    }
 }
