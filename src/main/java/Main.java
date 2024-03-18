@@ -1,7 +1,4 @@
-import model.Animal;
-import model.Cat;
-import model.Dog;
-import model.Hamster;
+import model.*;
 
 public class Main {
 
@@ -15,5 +12,8 @@ public class Main {
         Animal hamster = new Hamster("Хомка", 5);
         System.out.println(hamster);
         hamster.eat();
+        Animal bear = new Bear("Миша", 5);
+        System.out.println(bear);
+        bear.eat();
     }
 }
