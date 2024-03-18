@@ -2,13 +2,16 @@ package model;
 
 public abstract class Animal {
 
-    private String name;
+     private String name;
 
      private int age;
+
+     private static int id;
 
     public Animal(String name, int age) {
         this.name = name;
         this.age = age;
+        id++;
     }
 
     @Override
@@ -27,5 +30,13 @@ public abstract class Animal {
         return age;
     }
 
+    public static int getId() {
+        return id;
+    }
+
     abstract public void eat();
+
+    public static void typeAnimal() {
+        System.out.println("Я животное");
+    }
 }
