@@ -30,6 +30,10 @@ public class Main {
         System.out.println("Список задач после добавления:\n");
         printTasks(taskManager);
         System.out.println();
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.delTaskById(1);
+        System.out.println(taskManager.getHistory());
     }
 
     public static void printTasks(TaskManager taskManager) {
