@@ -1,7 +1,6 @@
 import model.Epic;
-import model.Task;
 import model.SubTask;
-import model.TaskStatus;
+import model.Task;
 import model.TaskType;
 import service.Manager;
 import service.TaskManager;
@@ -31,8 +30,16 @@ public class Main {
         printTasks(taskManager);
         System.out.println();
         taskManager.getTaskById(1);
+        taskManager.getTaskById(3);
+        taskManager.getTaskById(7);
         taskManager.getTaskById(2);
-        taskManager.delTaskById(1);
+        taskManager.getTaskById(4);
+        taskManager.getTaskById(5);
+        taskManager.getTaskById(6);
+        System.out.println("История задач:\n");
+        System.out.println(taskManager.getHistory());
+        taskManager.clearTasks(TaskType.EPIC);
+        System.out.println("История задач:\n");
         System.out.println(taskManager.getHistory());
     }
 

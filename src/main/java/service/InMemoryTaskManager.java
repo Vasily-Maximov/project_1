@@ -18,7 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final Map<Integer, AbstractTask> tasks = new HashMap<>();
 
-    private HistoryManager historyManager = Manager.getDefaultHistory();
+    private final HistoryManager historyManager = Manager.getDefaultHistory();
 
     private List<AbstractTask> getTasksByType(TaskType taskType) {
         List<AbstractTask> tasksList = new ArrayList<>();
@@ -42,14 +42,19 @@ public class InMemoryTaskManager implements TaskManager {
                     break;
                 default:
             }
-            tasks.remove(task.getId());
+            int id = task.getId();
+            historyManager.remove(id);
+            tasks.remove(id);
         }
     }
 
     private void clearSubtasksOfEpic(Epic epic) {
         List<SubTask> subTaskList = epic.getSubTasksOfEpic();
+        int id;
         for(SubTask subTask : subTaskList) {
-            tasks.remove(subTask.getId());
+            id = subTask.getId();
+            historyManager.remove(id);
+            tasks.remove(id);
         }
     }
 
@@ -134,6 +139,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             default:
         }
+        historyManager.remove(idTask);
         tasks.remove(idTask);
     }
 
