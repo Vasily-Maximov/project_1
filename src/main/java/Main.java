@@ -5,11 +5,6 @@ import model.TaskType;
 import service.Manager;
 import service.TaskManager;
 
-import javax.sound.midi.Patch;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -22,6 +17,10 @@ public class Main {
         Epic epic2 = new Epic("Принять товар", "Фактическое получение товара от экспедитора");
         SubTask subTask2_1 = new SubTask("Проверить товар", "Сверить количество товара по накладной с фактическим",
                 epic2);
+
+        System.out.println("Список задач после загрузки:\n");
+        printTasks(taskManager);
+        System.out.println();
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);

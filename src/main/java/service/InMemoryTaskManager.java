@@ -12,13 +12,17 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private int generatorId;
+    protected int generatorId;
 
     private final TaskStatus taskStatusNew = TaskStatus.NEW;
 
-    private final Map<Integer, AbstractTask> tasks = new HashMap<>();
+    protected final Map<Integer, AbstractTask> tasks = new HashMap<>();
 
-    private final HistoryManager historyManager = Manager.getDefaultHistory();
+    protected final HistoryManager historyManager;
+
+    public InMemoryTaskManager() {
+        historyManager = Manager.getDefaultHistory();
+    }
 
     private List<AbstractTask> getTasksByType(TaskType taskType) {
         List<AbstractTask> tasksList = new ArrayList<>();
