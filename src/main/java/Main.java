@@ -18,6 +18,10 @@ public class Main {
         SubTask subTask2_1 = new SubTask("Проверить товар", "Сверить количество товара по накладной с фактическим",
                 epic2);
 
+        System.out.println("Список задач после загрузки:\n");
+        printTasks(taskManager);
+        System.out.println();
+
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(epic1);
