@@ -60,7 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private void save() {
         try (FileWriter fileWriter = new FileWriter(file)) {
             StringBuilder stringBuilder = new StringBuilder(HEADLINE + System.lineSeparator());
-            for (Map.Entry<Integer, AbstractTask> entry: tasks.entrySet()) {
+            for (Map.Entry<Integer, AbstractTask> entry: getAllTasks().entrySet()) {
                 stringBuilder.append(toString(entry.getValue()));
             }
             stringBuilder.append(System.lineSeparator());
@@ -139,7 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void addTaskToManager(AbstractTask task) {
         int idTask = task.getId();
-        tasks.put(idTask, task);
+        getAllTasks().put(idTask, task);
         generatorId = Math.max(generatorId, idTask);
     }
 
@@ -153,6 +153,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public List<AbstractTask> getTasks(TaskType taskType) {
         save();
         return super.getTasks(taskType);
+    }
+
+    @Override
+    public Map<Integer, AbstractTask> getAllTasks() {
+        save();
+        return super.getAllTasks();
     }
 
     @Override

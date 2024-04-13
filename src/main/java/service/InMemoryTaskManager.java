@@ -16,7 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final TaskStatus taskStatusNew = TaskStatus.NEW;
 
-    protected final Map<Integer, AbstractTask> tasks = new HashMap<>();
+    private final Map<Integer, AbstractTask> tasks = new HashMap<>();
 
     protected final HistoryManager historyManager;
 
@@ -104,6 +104,11 @@ public class InMemoryTaskManager implements TaskManager {
             default:
         }
         return tasksList;
+    }
+
+    @Override
+    public Map<Integer, AbstractTask> getAllTasks() {
+        return tasks;
     }
 
     @Override
