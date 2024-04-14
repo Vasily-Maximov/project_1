@@ -53,21 +53,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             return fileBackedTasksManager;
         } catch (IOException exception) {
-            throw new ManagerSaveException("Ошибка при открытии файла 'backup.csv'", exception);
+            throw new ManagerSaveException(String.format("Ошибка при открытии файла: %s", file.getName()));
         }
     }
 
     private void save() {
         try (FileWriter fileWriter = new FileWriter(file)) {
             StringBuilder stringBuilder = new StringBuilder(HEADLINE + System.lineSeparator());
-            for (Map.Entry<Integer, AbstractTask> entry: tasks.entrySet()) {
+            for (Map.Entry<Integer, AbstractTask> entry: getAllTasks().entrySet()) {
                 stringBuilder.append(toString(entry.getValue()));
             }
             stringBuilder.append(System.lineSeparator());
             stringBuilder.append(historyToString(historyManager));
             fileWriter.write(stringBuilder.toString());
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении сущностей и истории в файл 'backup.csv'", e);
+            throw new ManagerSaveException(String.format("Ошибка при сохранении сущностей и истории в файл: %s", file.getName()));
         }
     }
 
@@ -97,7 +97,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 task = new Task(name, description);
                 break;
             case SUBTASK:
-                task = new SubTask(name, description, (Epic) getTaskById(Integer.parseInt(fields[5])));
+                task = new SubTask(name, description, (Epic) getAllTasks().get(Integer.parseInt(fields[5])));
                 break;
             case EPIC:
                 task = new Epic(name, description);
@@ -139,7 +139,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private void addTaskToManager(AbstractTask task) {
         int idTask = task.getId();
-        tasks.put(idTask, task);
+        getAllTasks().put(idTask, task);
         generatorId = Math.max(generatorId, idTask);
     }
 
@@ -151,8 +151,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public List<AbstractTask> getTasks(TaskType taskType) {
-        save();
         return super.getTasks(taskType);
+    }
+
+    @Override
+    public Map<Integer, AbstractTask> getAllTasks() {
+        return super.getAllTasks();
     }
 
     @Override
@@ -163,8 +167,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public AbstractTask getTaskById(Integer idTask) {
+        AbstractTask abstractTask = super.getTaskById(idTask);
         save();
-        return super.getTaskById(idTask);
+        return abstractTask;
     }
 
     @Override
@@ -181,13 +186,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public List<AbstractTask> getSubTasksOfEpicById(Integer taskId) {
-        save();
         return super.getSubTasksOfEpicById(taskId);
     }
 
     @Override
     public List<AbstractTask> getHistory() {
-        save();
         return super.getHistory();
     }
 }

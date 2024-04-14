@@ -3,12 +3,15 @@ package service;
 import model.AbstractTask;
 import model.TaskType;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
 
     void addTask(AbstractTask task);
 
     List<AbstractTask> getTasks(TaskType taskType);
+
+    Map<Integer, AbstractTask> getAllTasks();
 
     void clearTasks(TaskType taskType);
 

@@ -40,9 +40,11 @@ public class Main {
         taskManager.getTaskById(4);
         taskManager.getTaskById(5);
         taskManager.getTaskById(6);
+        taskManager.getTaskById(1);
         System.out.println("История задач:\n");
         System.out.println(taskManager.getHistory());
-        taskManager.clearTasks(TaskType.EPIC);
+        taskManager.delTaskById(5);
+        taskManager.delTaskById(6);
         System.out.println("История задач:\n");
         System.out.println(taskManager.getHistory());
     }
