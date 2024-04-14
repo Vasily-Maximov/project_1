@@ -1,10 +1,11 @@
 package service;
 
-import model.Task;
 import model.Epic;
 import model.SubTask;
-import model.AbstractTask;
+import model.Task;
 import model.TaskType;
+import model.AbstractTask;
+import model.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -142,7 +143,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateTaskTest7() {
-
+        subTask2_1.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask2_1);
+        subTask1_1.setTaskStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(subTask1_1);
+        Assertions.assertEquals(epic1, taskManager.getTaskById(epic1.getId()));
+        task1.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(task1);
+        Assertions.assertEquals(task1, taskManager.getTaskById(task1.getId()));
     }
 
     @Test

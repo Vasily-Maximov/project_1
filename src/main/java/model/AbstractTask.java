@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public abstract class AbstractTask {
 
     private int id;
@@ -62,5 +64,18 @@ public abstract class AbstractTask {
                 ", description='" + description + '\'' +
                 ", taskStatus=" + taskStatus +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractTask task = (AbstractTask) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
