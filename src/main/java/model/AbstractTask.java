@@ -1,23 +1,31 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class AbstractTask {
 
     private int id;
-
-    protected String name;
-
-    protected String description;
-
-    private TaskStatus taskStatus = TaskStatus.NEW;
-
     private final TaskType taskType;
+    private String name;
+    private String description;
+    private TaskStatus taskStatus = TaskStatus.NEW;
+    private long duration;
+    private LocalDateTime startTime;
 
     public AbstractTask(TaskType taskType, String name, String description) {
         this.name = name;
         this.description = description;
         this.taskType = taskType;
+    }
+
+    public AbstractTask(TaskType taskType, String name, String description, long duration, LocalDateTime startTime) {
+        this.taskType = taskType;
+        this.name = name;
+        this.description = description;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public int getId() {
@@ -54,6 +62,30 @@ public abstract class AbstractTask {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Optional<LocalDateTime> getEndTime() {
+        if (startTime != null) {
+            return Optional.of(startTime.plusMinutes(duration));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     @Override
