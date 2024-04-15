@@ -65,9 +65,6 @@ public class Epic extends AbstractTask {
         Optional<SubTask> optionalSubTask = subTasksOfEpic.stream().filter(subTask -> subTask.getEndTime().isPresent())
                 .max(Epic::compareEndTime);
         endTime = optionalSubTask.flatMap(AbstractTask::getEndTime).orElse(null);
-        if (endTime != null) {
-            endTime = endTime.plusMinutes(calculateDurationForEpic());
-        }
     }
 
     public long calculateDurationForEpic() {
