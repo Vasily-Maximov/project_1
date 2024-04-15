@@ -5,10 +5,12 @@ import model.AbstractTask;
 import model.SubTask;
 import model.TaskStatus;
 import model.TaskType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -62,10 +64,14 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updEpicStatus(SubTask subTask) {
+    private void updEpic(SubTask subTask) {
         Epic epic = subTask.getEpic();
         if (epic != null) {
+            epic.getSubTasksOfEpic().add(subTask);
             epic.setTaskStatus(taskStatusNew);
+            epic.setDuration(0);
+            epic.setStartTime(LocalDateTime.MIN);
+            epic.calculateEndTimeForEpic();
         }
     }
 
@@ -81,10 +87,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(AbstractTask task) {
         task.setId(++generatorId);
         tasks.put(task.getId(), task);
-        if (task instanceof SubTask) {
-            SubTask subTask = (SubTask) task;
-            Epic epic = (Epic) tasks.get(subTask.getEpic().getId());
-            epic.getSubTasksOfEpic().add(subTask);
+        if (task.getTaskType() == TaskType.SUBTASK) {
+            updEpic((SubTask) task);
         }
     }
 
@@ -157,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
         TaskType taskType = task.getTaskType();
         tasks.put(task.getId(), task);
         if (taskType == TaskType.SUBTASK) {
-            updEpicStatus((SubTask) task);
+            updEpic((SubTask) task);
         }
     }
 

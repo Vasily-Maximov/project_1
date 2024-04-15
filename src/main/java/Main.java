@@ -1,7 +1,4 @@
-import model.Epic;
-import model.SubTask;
-import model.Task;
-import model.TaskType;
+import model.*;
 import service.Manager;
 import service.TaskManager;
 
@@ -22,6 +19,7 @@ public class Main {
         printTasks(taskManager);
         System.out.println();
 
+        subTask2_1.setTaskStatus(TaskStatus.DONE);
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(epic1);

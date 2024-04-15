@@ -1,11 +1,18 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class SubTask extends AbstractTask {
 
     private final Epic epic;
 
     public SubTask(String name, String description, Epic epic) {
         super(TaskType.SUBTASK, name, description);
+        this.epic = epic;
+    }
+
+    public SubTask(String name, String description, Epic epic, long duration, LocalDateTime startTime) {
+        super(TaskType.SUBTASK, name, description, duration, startTime);
         this.epic = epic;
     }
 
@@ -25,8 +32,8 @@ public class SubTask extends AbstractTask {
     public String toString() {
         return "SubTask{" +
                 "id='" + getId() + '\'' +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
                 ", taskStatus=" + getTaskStatus() +
                 ", epicId=" + epic.getId() +
                 '}';
