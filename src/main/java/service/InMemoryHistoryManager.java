@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private final CustomLinkedList<AbstractTask> tasksHistory = new CustomLinkedList<>();
-
     private final Map<Integer, Node<AbstractTask>> history = new HashMap<>();
 
     @Override

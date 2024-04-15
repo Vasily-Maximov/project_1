@@ -1,5 +1,6 @@
 package service;
 
+import exeption.ManagerSaveException;
 import model.Epic;
 import model.AbstractTask;
 import model.SubTask;
@@ -7,20 +8,22 @@ import model.TaskStatus;
 import model.TaskType;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
+import java.util.Comparator;
+import java.util.TreeSet;
+import java.util.List;
 import java.util.ArrayList;
-
 
 public class InMemoryTaskManager implements TaskManager {
 
     protected int generatorId;
-
     private final TaskStatus taskStatusNew = TaskStatus.NEW;
-
     private final Map<Integer, AbstractTask> tasks = new HashMap<>();
-
     protected final HistoryManager historyManager;
+    private final Comparator<AbstractTask> taskComparator = Comparator
+            .comparing(AbstractTask::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(AbstractTask::getId);
+    private final TreeSet<AbstractTask> tasksTreeSet = new TreeSet<>(taskComparator);
 
     public InMemoryTaskManager() {
         historyManager = Manager.getDefaultHistory();
@@ -60,6 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
         for(SubTask subTask : subTaskList) {
             id = subTask.getId();
             historyManager.remove(id);
+            tasksTreeSet.remove(subTask);
             tasks.remove(id);
         }
     }
@@ -80,15 +84,50 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic != null) {
             epic.getSubTasksOfEpic().remove(subTask);
             epic.setTaskStatus(taskStatusNew);
+            epic.setDuration(0);
+            epic.setStartTime(LocalDateTime.MIN);
+            epic.calculateEndTimeForEpic();
         }
+    }
+
+    public boolean isCheckIntersections(AbstractTask task) {
+        boolean isIntersection = false;
+        List<AbstractTask> sortedListTask = getPrioritizedTasks();
+        LocalDateTime startTime = task.getStartTime();
+        LocalDateTime endTime = task.getEndTime().orElse(null);
+        if(startTime != null) {
+            for (AbstractTask valueTask : sortedListTask) {
+                if (valueTask.getStartTime() != null) {
+                    if (!(startTime.isBefore(valueTask.getStartTime()) && endTime.isBefore(valueTask.getStartTime()))) {
+                        if (!(startTime.isAfter(valueTask.getEndTime().orElse(null)) && endTime.isAfter(valueTask.getEndTime()
+                                .orElse(null)))) {
+                            isIntersection = true;
+                        }
+                    }
+                }
+            }
+        }
+        return isIntersection;
     }
 
     @Override
     public void addTask(AbstractTask task) {
         task.setId(++generatorId);
         tasks.put(task.getId(), task);
-        if (task.getTaskType() == TaskType.SUBTASK) {
-            updEpic((SubTask) task);
+        switch (task.getTaskType()) {
+            case TASK:
+                if (isCheckIntersections(task)) {
+                    throw new ManagerSaveException("Новый объект пересекается с другими объектами в списке");
+                }
+                tasksTreeSet.add(task);
+                break;
+            case SUBTASK:
+                updEpic((SubTask) task);
+                if (isCheckIntersections(task)) {
+                    throw new ManagerSaveException("Новый объект пересекается с другими объектами в списке");
+                }
+                tasksTreeSet.add(task);
+                break;
         }
     }
 
@@ -149,7 +188,10 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             case SUBTASK:
                 calculateEpicStatusAfterDelSubtask((SubTask) task);
+                tasksTreeSet.remove(task);
                 break;
+            case TASK:
+                tasksTreeSet.remove(task);
             default:
         }
         historyManager.remove(idTask);
@@ -178,5 +220,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<AbstractTask> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public List<AbstractTask> getPrioritizedTasks() {
+        return new ArrayList<>(tasksTreeSet);
     }
 }
