@@ -10,7 +10,7 @@ public abstract class AbstractTask {
     private final TaskType taskType;
     private String name;
     private String description;
-    private TaskStatus taskStatus = TaskStatus.NEW;
+    private TaskStatus taskStatus;
     private long duration;
     private LocalDateTime startTime;
 
@@ -18,6 +18,7 @@ public abstract class AbstractTask {
         this.name = name;
         this.description = description;
         this.taskType = taskType;
+        taskStatus = TaskStatus.NEW;
     }
 
     public AbstractTask(TaskType taskType, String name, String description, long duration, LocalDateTime startTime) {
@@ -26,6 +27,7 @@ public abstract class AbstractTask {
         this.description = description;
         this.duration = duration;
         this.startTime = startTime;
+        taskStatus = TaskStatus.NEW;
     }
 
     public int getId() {

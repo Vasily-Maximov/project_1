@@ -7,12 +7,7 @@ import model.SubTask;
 import model.TaskStatus;
 import model.TaskType;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Comparator;
-import java.util.TreeSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -27,6 +22,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     public InMemoryTaskManager() {
         historyManager = Manager.getDefaultHistory();
+    }
+
+    public TreeSet<AbstractTask> getTasksTreeSet() {
+        return tasksTreeSet;
     }
 
     private List<AbstractTask> getTasksByType(TaskType taskType) {
@@ -69,18 +68,23 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updEpic(SubTask subTask) {
-        Epic epic = subTask.getEpic();
+        Epic epic = (Epic)tasks.get(subTask.getEpicId());
+        List<SubTask> subTasksOfEpic;
         if (epic != null) {
-            epic.getSubTasksOfEpic().add(subTask);
+            subTasksOfEpic = epic.getSubTasksOfEpic();
+            if (!subTasksOfEpic.contains(subTask)) {
+                subTasksOfEpic.add(subTask);
+            }
             epic.setTaskStatus(taskStatusNew);
             epic.setDuration(0);
             epic.setStartTime(LocalDateTime.MIN);
             epic.calculateEndTimeForEpic();
+            //updateTask(epic);
         }
     }
 
     private void calculateEpicStatusAfterDelSubtask(SubTask subTask) {
-        Epic epic = subTask.getEpic();
+        Epic epic = (Epic)tasks.get(subTask.getEpicId());
         if (epic != null) {
             epic.getSubTasksOfEpic().remove(subTask);
             epic.setTaskStatus(taskStatusNew);
@@ -122,7 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
                 tasksTreeSet.add(task);
                 break;
             case SUBTASK:
-                updEpic((SubTask) task);
+                updateTask(task);
                 if (isCheckIntersections(task)) {
                     throw new ManagerSaveException("Новый объект пересекается с другими объектами в списке");
                 }

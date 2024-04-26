@@ -4,28 +4,25 @@ import java.time.LocalDateTime;
 
 public class SubTask extends AbstractTask {
 
-    private final Epic epic;
+    private final int epicId;
 
     public SubTask(String name, String description, Epic epic) {
         super(TaskType.SUBTASK, name, description);
-        this.epic = epic;
+        this.epicId = epic.getId();
     }
 
     public SubTask(String name, String description, Epic epic, long duration, LocalDateTime startTime) {
         super(TaskType.SUBTASK, name, description, duration, startTime);
-        this.epic = epic;
+        this.epicId = epic.getId();
     }
 
-    public Epic getEpic() {
-        return epic;
+    public int getEpicId() {
+        return epicId;
     }
 
     @Override
     public void setTaskStatus(TaskStatus taskStatus) {
         super.setTaskStatus(taskStatus);
-        if (epic != null) {
-            epic.setTaskStatus(TaskStatus.NEW);
-        }
     }
 
     @Override
@@ -35,7 +32,7 @@ public class SubTask extends AbstractTask {
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", taskStatus=" + getTaskStatus() +
-                ", epicId=" + epic.getId() +
+                ", epicId=" + epicId +
                 '}';
     }
 }

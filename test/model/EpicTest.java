@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import service.InMemoryTaskManager;
 import service.TaskManager;
 import java.util.List;
+import java.util.Set;
 
 class EpicTest {
 
@@ -20,15 +21,15 @@ class EpicTest {
     public void initialization() {
         taskManager = new InMemoryTaskManager();
         epic1 = new Epic("Провести инвентаризацию", "Проверка наличия имущества организации");
+        taskManager.addTask(epic1);
         subTask1_1 = new SubTask("Начать инвентаризацию", "Пересчет фактического наличия товара", epic1);
+        taskManager.addTask(subTask1_1);
         subTask1_2 = new SubTask("Начать инвентаризацию", "Пересчет фактического наличия товара", epic1);
+        taskManager.addTask(subTask1_2);
         epic2 = new Epic("Принять товар", "Фактическое получение товара от экспедитора");
+        taskManager.addTask(epic2);
         subTask2_1 = new SubTask("Проверить товар", "Сверить количество товара по накладной с фактическим",
                 epic2);
-        taskManager.addTask(epic1);
-        taskManager.addTask(subTask1_1);
-        taskManager.addTask(subTask1_2);
-        taskManager.addTask(epic2);
     }
 
     @Test
@@ -48,11 +49,15 @@ class EpicTest {
         epic1.setTaskStatus(TaskStatus.DONE);
         Assertions.assertEquals(TaskStatus.NEW, epic1.getTaskStatus());
         subTask1_1.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask1_1);
         subTask1_2.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask1_2);
         Assertions.assertEquals(TaskStatus.DONE, epic1.getTaskStatus());
         subTask1_1.setTaskStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(subTask1_1);
         Assertions.assertEquals(TaskStatus.IN_PROGRESS, epic1.getTaskStatus());
         subTask1_2.setTaskStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(subTask1_2);
         Assertions.assertEquals(TaskStatus.IN_PROGRESS, epic1.getTaskStatus());
 
         Assertions.assertEquals(TaskStatus.NEW, epic2.getTaskStatus());
@@ -70,6 +75,7 @@ class EpicTest {
                 " taskStatus=NEW, subTasksOfEpic=[2, 3]}";
         Assertions.assertEquals(epic1ToString, epic1.toString());
         subTask1_2.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(subTask1_2);
         epic1ToString = "Epic{id='1'name='Провести инвентаризацию', description='Проверка наличия имущества организации'," +
                 " taskStatus=IN_PROGRESS, subTasksOfEpic=[2, 3]}";
         Assertions.assertEquals(epic1ToString, epic1.toString());

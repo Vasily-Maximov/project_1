@@ -25,6 +25,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected Epic epic2;
     protected SubTask subTask2_1;
 
+    public TaskManagerTest() {
+    }
+
     public TaskManagerTest(T taskManager) {
         this.taskManager = taskManager;
     }
@@ -36,19 +39,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @BeforeEach
     public void initialization() {
         task1 = new Task("Открыть смену на ККМ", "Перед началом работы необходимо открыть смену на ККМ");
+        taskManager.addTask(task1);
         task2 = new Task("Закрыть смену на ККМ", "Перед завершением работы необходимо закрыть смену на ККМ");
+        taskManager.addTask(task2);
         epic1 = new Epic("Провести инвентаризацию", "Проверка наличия имущества организации");
+        taskManager.addTask(epic1);
         subTask1_1 = new SubTask("Начать инвентаризацию", "Пересчет фактического наличия товара", epic1);
+        taskManager.addTask(subTask1_1);
         subTask1_2 = new SubTask("Начать инвентаризацию", "Пересчет фактического наличия товара", epic1);
+        taskManager.addTask(subTask1_2);
         epic2 = new Epic("Принять товар", "Фактическое получение товара от экспедитора");
+        taskManager.addTask(epic2);
         subTask2_1 = new SubTask("Проверить товар", "Сверить количество товара по накладной с фактическим",
                 epic2);
-        taskManager.addTask(task1);
-        taskManager.addTask(task2);
-        taskManager.addTask(epic1);
-        taskManager.addTask(subTask1_1);
-        taskManager.addTask(subTask1_2);
-        taskManager.addTask(epic2);
         taskManager.addTask(subTask2_1);
     }
 
