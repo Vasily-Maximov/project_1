@@ -24,6 +24,10 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager = Manager.getDefaultHistory();
     }
 
+    public TreeSet<AbstractTask> getTasksTreeSet() {
+        return tasksTreeSet;
+    }
+
     private List<AbstractTask> getTasksByType(TaskType taskType) {
         List<AbstractTask> tasksList = new ArrayList<>();
         for(AbstractTask task : tasks.values()) {

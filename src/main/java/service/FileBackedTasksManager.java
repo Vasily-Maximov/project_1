@@ -20,11 +20,14 @@ import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private final File file;
+    private File file;
 
     private static final String HEADLINE = "id,type,name,status,description,epic,duration,startTime";
 
     private static final String DELIMITER = ",";
+
+    public FileBackedTasksManager() {
+    }
 
     public FileBackedTasksManager(File file) {
         super();
@@ -59,7 +62,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() {
+    public void save() {
         try (FileWriter fileWriter = new FileWriter(file)) {
             StringBuilder stringBuilder = new StringBuilder(HEADLINE + System.lineSeparator());
             for (Map.Entry<Integer, AbstractTask> entry: getAllTasks().entrySet()) {

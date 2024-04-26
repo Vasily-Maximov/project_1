@@ -25,6 +25,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected Epic epic2;
     protected SubTask subTask2_1;
 
+    public TaskManagerTest() {
+    }
+
     public TaskManagerTest(T taskManager) {
         this.taskManager = taskManager;
     }
