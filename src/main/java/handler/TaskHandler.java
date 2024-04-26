@@ -5,8 +5,8 @@ import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import exeption.HttpException;
-import model.AbstractTask;
-import model.TaskType;
+import exeption.ManagerSaveException;
+import model.*;
 import server.HttpMethod;
 import server.HttpUri;
 import service.Manager;
@@ -101,9 +101,13 @@ public class TaskHandler implements HttpHandler {
         String response = "";
         switch (httpUri) {
             case URI_TASKS:
+                response = responseFromApiPost(httpExchange, TaskType.TASK);
+                break;
             case URI_EPICS:
+                response = responseFromApiPost(httpExchange, TaskType.EPIC);
+                break;
             case URI_SUBTASKS:
-                response = responseFromApiPost(httpExchange);
+                response = responseFromApiPost(httpExchange, TaskType.SUBTASK);
                 break;
         }
         return response;
@@ -172,17 +176,32 @@ public class TaskHandler implements HttpHandler {
         return response;
     }
 
-    private String responseFromApiPost(HttpExchange httpExchange) throws IOException {
+    private String responseFromApiPost(HttpExchange httpExchange, TaskType taskType) throws IOException {
         String response;
+        AbstractTask task = null;
         Map<String, List<String>> requestHeaders = httpExchange.getRequestHeaders();
         List<String> listValue = requestHeaders.get("Content-type");
         if ((!listValue.isEmpty()) && (listValue.contains("application/json"))) {
             InputStream requestBody = httpExchange.getRequestBody();
             String stringRequestBody = new String(requestBody.readAllBytes(), DEFAULT_CHARSET);
             try {
-                AbstractTask task = gson.fromJson(stringRequestBody, AbstractTask.class);
-                taskManager.addTask(task);
-                response = "Задача успешно добавлена";
+                switch (taskType) {
+                    case TASK:
+                        task = gson.fromJson(stringRequestBody, Task.class);
+                        break;
+                    case EPIC:
+                        task = gson.fromJson(stringRequestBody, Epic.class);
+                        break;
+                    case SUBTASK:
+                        task = gson.fromJson(stringRequestBody, SubTask.class);
+                        break;
+                }
+                try {
+                    taskManager.addTask(task);
+                    response = String.format("Задача успешно добавлена\n%s", gson.toJson(task));
+                } catch (ManagerSaveException e) {
+                    response = String.format("Задача успешно добавлена\n%s\n%s", gson.toJson(task), e.getMessage());
+                }
             } catch (JsonSyntaxException exception) {
                 response = "Получен не корректный формат обмена json";
             }
@@ -220,7 +239,7 @@ public class TaskHandler implements HttpHandler {
     private HttpUri getHttpUri(String httpUri) {
         final String uri;
         String[] pathParts = httpUri.split("'?id=");
-        if (pathParts.length > 0) {
+        if (pathParts.length > 1) {
             uri = pathParts[0];
             setTaskIdFromRequest(pathParts[1]);
         } else {

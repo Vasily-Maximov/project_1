@@ -1,17 +1,16 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Epic extends AbstractTask {
 
-    private final List<SubTask> subTasksOfEpic = new ArrayList<>();
+    private final List<SubTask> subTasksOfEpic;
     private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(TaskType.EPIC, name, description);
+        subTasksOfEpic = new ArrayList<>();
     }
 
     private List<Integer> getIdOfSubtasks() {
